@@ -1,52 +1,50 @@
 export const initialState = {
+    // showing: process.env.NODE_ENV != 'production',
     showing: false,
-    active: null,
-    menus: Array(),
     stack: Array(),
-    
-    // showing: true,
-    // active: 'main',
-    // menus: {
-    //     main: {
-    //         label: 'List Menu',
-    //         items: [
-    //             {
-    //                 label: 'Item 1',
-    //                 description: 'Item 1 Description',
-    //                 event: 'Triggered',
-    //             },
-    //             {
-    //                 label: 'Item 2',
-    //                 description: 'Item 2 Description',
-    //                 submenu: 'Triggered',
-    //             },
-    //             {
-    //                 label: 'Item 3',
-    //                 description: 'Item 3 Description',
-    //                 actions: [
-    //                     {
-    //                         icon: 'dragon',
-    //                         event: 'Test',
-    //                     },
-    //                     {
-    //                         icon: 'swords',
-    //                         event: 'Test',
-    //                     },
-    //                 ]
-    //             },
-    //         ],
-    //     },
-    //     Triggered: {
-    //         label: 'Triggered',
-    //         items: [
-    //             {
-    //                 label: 'Item 1',
-    //                 description: 'Item 1 Description',
-    //                 event: 'Triggered',
-    //             },
-    //         ],
-    //     },
-    // },
+    active: process.env.NODE_ENV == 'production' ? null : 'main',
+    menus: process.env.NODE_ENV == 'production' ? Array() : {
+        main: {
+            label: 'List Menu',
+            items: [
+                {
+                    label: 'Item 1',
+                    icon: 'brain',
+                    description: 'Item 1 Description',
+                    event: 'Triggered',
+                },
+                {
+                    label: 'Item 2',
+                    description: 'Item 2 Description',
+                    submenu: 'Triggered',
+                },
+                {
+                    label: 'Item 3',
+                    description: 'Item 3 Description',
+                    actions: [
+                        {
+                            icon: 'dragon',
+                            event: 'Test',
+                        },
+                        {
+                            icon: 'brain',
+                            event: 'Test',
+                        },
+                    ]
+                },
+            ],
+        },
+        Triggered: {
+            label: 'Triggered',
+            items: [
+                {
+                    label: 'Item 1',
+                    description: 'Item 1 Description',
+                    event: 'Triggered',
+                },
+            ],
+        },
+    },
 };
 
 export default (state = initialState, action) => {

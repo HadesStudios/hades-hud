@@ -1,75 +1,88 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@mui/styles';
-import { Grid, Slide } from '@mui/material';
+import { Slide, CircularProgress, Box } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Moment from 'react-moment';
 import useInterval from 'react-useinterval';
-
 import { Sanitize } from '../../../util/Parser';
 import { useDispatch } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
     alert: {
         marginBottom: 10,
-        borderRadius: 4,
-        background: theme.palette.secondary.dark,
+        background: `${theme.palette.secondary.dark}a9`,
         '&.success': {
-            background: theme.palette.success.main,
+            background: '#4f6421a9',
         },
         '&.warning': {
-            background: theme.palette.warning.dark,
+            background: `${theme.palette.warning.dark}a9`,
         },
         '&.error': {
-            background: theme.palette.error.main,
+            background: '#6c2425a9',
         },
         '&.info': {
-            background: theme.palette.info.main,
+            background: '#2f7495a9',
         },
-    },
-    header: {
-        padding: '5px 10px',
-        borderBottom: `1px solid ${theme.palette.border.divider}`,
-        '.success &': {
-            borderBottom: `1px solid ${theme.palette.success.light}`,
-        },
-        '.warning &': {
-            borderBottom: `1px solid ${theme.palette.warning.light}`,
-        },
-        '.error &': {
-            borderBottom: `1px solid ${theme.palette.error.light}`,
-        },
-        '.info &': {
-            borderBottom: `1px solid ${theme.palette.info.light}`,
-        },
+        borderRadius: '.5vh',
+        overflow: 'hidden',
+        position: 'relative',
+        zIndex: 999,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
     },
     body: {
+        display: 'flex',
+        flexDirection: 'row',
         padding: 10,
+        flex: 1,
     },
-    barBg: {
-        height: 4,
-        background: theme.palette.secondary.light,
+    progressContainer: {
+        width: 30,
+        height: 30,
+        position: 'absolute',
+        top: 5,
+        right: 5,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    circularProgressBackground: {
+        position: 'absolute',
+        color: `${theme.palette.grey[300]}c4`,
+        '&.success': {
+            color: '#4f6421c4',
+        },
+        '&.warning': {
+            color: `${theme.palette.warning.dark}c4`,
+        },
+        '&.error': {
+            color: '#6c2425c4',
+        },
+        '&.info': {
+            color: '#2f7495c4',
+        },
+    },
+    circularProgress: {
+        position: 'absolute',
+        color: `${theme.palette.secondary.light}`,
         '.success &': {
-            background: theme.palette.success.dark,
+            color: '#4f6421',
         },
         '.warning &': {
-            background: theme.palette.warning.main,
+            color: `${theme.palette.warning.dark}`,
         },
         '.error &': {
-            background: theme.palette.error.dark,
+            color: '#6c2425',
         },
         '.info &': {
-            background: theme.palette.info.dark,
+            color: '#2f7495',
         },
     },
-    bar: {
-        maxWidth: '100%',
-        height: '100%',
-        transition: 'width ease-in 0.15s',
-        background: theme.palette.text.primary,
+    icon: {
+        marginRight: 10,
     },
     sticky: {
         marginRight: 10,
-        color: theme.palette.text.alt,
     },
 }));
 
@@ -139,8 +152,15 @@ export default ({ notification }) => {
                         : null
                 }
             >
-                <Grid container className={classes.header}>
-                    <Grid item xs={4}>
+                <div
+                    className={classes.body}
+                    style={
+                        Boolean(notification?.style?.body)
+                            ? { ...notification?.style?.body }
+                            : null
+                    }
+                >
+                    <div className={classes.icon}>
                         {notification.duration <= 0 && (
                             <FontAwesomeIcon
                                 className={classes.sticky}
@@ -154,61 +174,24 @@ export default ({ notification }) => {
                                     : getTypeIcon()
                             }
                         />
-                    </Grid>
-                    <Grid item xs={8} style={{ textAlign: 'right' }}>
-                        <Moment
-                            className={classes.postedTime}
-                            interval={60000}
-                            fromNow
-                            date={notification.created}
-                        />
-                    </Grid>
-                </Grid>
-                <div
-                    className={classes.body}
-                    style={
-                        Boolean(notification?.style?.body)
-                            ? { ...notification?.style?.body }
-                            : null
-                    }
-                >
+                    </div>
                     {Sanitize(notification.message)}
                 </div>
                 {notification.duration > 0 && (
-                    <div className={classes.progress}>
-                        <div
-                            className={classes.barBg}
-                            style={
-                                Boolean(notification?.style?.progressBg)
-                                    ? { ...notification?.style?.progressBg }
-                                    : null
-                            }
-                        >
-                            <div
-                                className={classes.bar}
-                                style={
-                                    Boolean(notification?.style?.progress)
-                                        ? {
-                                              ...notification?.style?.progress,
-                                              width: `${
-                                                  100 -
-                                                  (timer /
-                                                      notification.duration) *
-                                                      100
-                                              }%`,
-                                          }
-                                        : {
-                                              width: `${
-                                                  100 -
-                                                  (timer /
-                                                      notification.duration) *
-                                                      100
-                                              }%`,
-                                          }
-                                }
-                            ></div>
-                        </div>
-                    </div>
+                    <Box className={classes.progressContainer}>
+                        <CircularProgress
+                            variant="determinate"
+                            value={100}
+                            size={15}
+                            className={classes.circularProgressBackground}
+                        />
+                        <CircularProgress
+                            variant="determinate"
+                            value={(timer / notification.duration) * 100}
+                            size={15}
+                            className={classes.circularProgress}
+                        />
+                    </Box>
                 )}
             </div>
         </Slide>

@@ -27,7 +27,7 @@ RegisterNetEvent("Characters:Client:Logout", function()
 end)
 
 AddEventHandler("HUD:Client:RemoveBlindfold", function(entity, data)
-    if type(entity) == "table" and entity.serverId then
+	if type(entity) == "table" and entity.serverId then
         Callbacks:ServerCallback("HUD:RemoveBlindfold", entity.serverId, function(s)
         end)
 	end

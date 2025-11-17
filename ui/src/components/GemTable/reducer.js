@@ -2,9 +2,11 @@ export const initialState = {
     showing: false,
     info: Object(),
 
-    // showing: true,
+    // showing: false,
     // info: {
-    //     quality: 100,
+    //     label: "Hello",
+
+    //     description: "Hello<br>Hello"
     // }
 };
 

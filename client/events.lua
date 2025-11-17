@@ -10,8 +10,22 @@ AddEventHandler("Vehicles:Client:ExitVehicle", function(currentVehicle, currentS
 end)
 
 AddEventHandler("Characters:Client:Spawn", function()
-	Hud:Show()
-	DisplayRadar(false)
+    local hudConfig = LocalPlayer.state.Character:GetData("HUDConfig")
+
+	-- Config print / can be used for testing
+    --print("HUDConfig Data: ", json.encode(hudConfig))
+
+    SendNUIMessage({
+        type = "SET_CONFIG",
+        data = {
+            config = hudConfig,
+        },
+    })
+
+    Hud:Show()
+    DisplayRadar(false)
+	ShowMinimap = false
+	TriggerEvent('Hud:Client:LoadMap')
 end)
 
 RegisterNetEvent("UI:Client:Reset", function(manual)
@@ -28,6 +42,18 @@ RegisterNetEvent("UI:Client:Reset", function(manual)
 	Input:Close()
 	InfoOverlay:Close()
 	Hud.Meth:Close()
+
+	if LocalPlayer.state.Character ~= nil then
+		SendNUIMessage({
+			type = "SET_CONFIG",
+			data = {
+				config = LocalPlayer.state.Character:GetData("HUDConfig"),
+			},
+		})
+	end
+	
+	ShowMinimap = false
+	TriggerEvent('Hud:Client:LoadMap')
 
 	if manual then
 		Wait(2500)
@@ -134,6 +160,16 @@ AddEventHandler("Targeting:Client:CloseMenu", function()
 	})
 end)
 
+RegisterNetEvent("UI:Client:Configure", function()
+	SetNuiFocus(true, true)
+	SendNUIMessage({
+		type = "TOGGLE_MENU",
+		data = {
+			state = true,
+		},
+	})
+end)
+
 RegisterNUICallback("targetingAction", function(data, cb)
 	SetNuiFocus(false, false)
 	SendNUIMessage({
@@ -142,4 +178,15 @@ RegisterNUICallback("targetingAction", function(data, cb)
 	})
 	TriggerEvent("Targeting:Client:MenuSelect", data and data.event, data and data.data or {})
 	cb("ok")
+end)
+
+RegisterNUICallback("SaveConfig", function(data, cb)
+	Callbacks:ServerCallback("HUD:SaveConfig", data, function(s)
+		cb(s)
+	end)
+end)
+
+RegisterNUICallback("CloseUI", function(data, cb)
+    SetNuiFocus(false, false)
+    cb("OK")
 end)

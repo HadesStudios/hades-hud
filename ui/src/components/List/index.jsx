@@ -20,23 +20,44 @@ const useStyles = makeStyles((theme) => ({
         margin: 'auto',
     },
     header: {
-        padding: 10,
-        background: theme.palette.secondary.light,
-        border: `1px solid ${theme.palette.border.divider}`,
-        borderBottom: 'none',
+        padding: 5,
+        background: theme.palette.secondary.main,
+        borderRadius: 5,
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0,
     },
     title: {
         lineHeight: '38px',
+        background: theme.palette.primary.main,
+        textAlign: 'center',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginLeft: '-40px',
+        marginTop: '-20px',
+        width: 'calc(100% + 80px)',
+		borderRadius: '.5vh',
+        userSelect: 'none'
+    },
+    title1: {
+        marginTop: '5px',
+        color: '#fff',
+        fontSize: '25px',
     },
     headerAction: {
         fontSize: 14,
+        marginRight: '-37px',
+    },
+    headerAction1: {
+        fontSize: 14,
+        marginRight: '10px',
     },
     list: {
         paddingTop: 0,
         paddingBottom: 0,
         maxHeight: '100%',
-        border: `1px solid ${theme.palette.border.divider}`,
-        borderTop: 'none',
+        borderRadius: 5,
+        borderTopLeftRadius: 0,
+        borderTopRightRadius: 0,
         overflowY: 'auto',
         overflowX: 'hidden',
         '&::-webkit-scrollbar': {
@@ -47,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
             transition: 'background ease-in 0.15s',
         },
         '&::-webkit-scrollbar-thumb:hover': {
-            background: theme.palette.primary.dark,
+            background: `${theme.palette.primary.main}c7`,
         },
         '&::-webkit-scrollbar-track': {
             background: theme.palette.secondary.main,
@@ -86,21 +107,15 @@ export default () => {
         <div className={classes.wrapper}>
             <Grid container className={classes.header}>
                 <Grid item xs={8} className={classes.title}>
-                    {menu?.label ?? 'List'}
+                    <div className={classes.title1}>{menu?.label ?? 'List'}</div>
                 </Grid>
                 <Grid item xs={4} style={{ textAlign: 'right' }}>
                     {Boolean(stack) && stack.length > 0 && (
-                        <IconButton
-                            className={classes.headerAction}
-                            onClick={onBack}
-                        >
+                        <IconButton className={classes.headerAction1} onClick={onBack}>
                             <FontAwesomeIcon icon={['fas', 'arrow-left']} />
                         </IconButton>
                     )}
-                    <IconButton
-                        className={classes.headerAction}
-                        onClick={onClose}
-                    >
+                    <IconButton className={classes.headerAction} onClick={onClose}>
                         <FontAwesomeIcon icon={['fas', 'x']} />
                     </IconButton>
                 </Grid>

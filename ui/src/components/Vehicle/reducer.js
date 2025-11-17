@@ -1,5 +1,7 @@
 export const initialState = {
-    showing: false,
+    showing: process.env.NODE_ENV != 'production',
+    menuVehicleToggled: false, // Don't touch
+    isInVehicle: false,
     ignition: true,
     speed: 0,
     speedMeasure: 'MPH',
@@ -14,15 +16,33 @@ export const initialState = {
 export default (state = initialState, action) => {
     switch (action.type) {
         case 'SHOW_VEHICLE':
+            if (state.menuVehicleToggled) return state;
             return {
                 ...state,
                 showing: true,
             };
         case 'HIDE_VEHICLE':
+            if (state.menuVehicleToggled) return state;
             return {
                 ...state,
                 showing: false,
             };
+        // case 'TOGGLE_VEHICLE':
+        //     if (action.payload.showing && state.isInVehicle) {
+        //         return {
+        //             ...state,
+        //             showing: action.payload.showing,
+        //             menuVehicleToggled: false,
+        //         };
+        //     }
+        //     if (!state.menuVehicleToggled) {
+        //         return {
+        //             ...state,
+        //             showing: action.payload.showing,
+        //             menuVehicleToggled: true,
+        //         };
+        //     }
+        //     return state;
         case 'UPDATE_IGNITION':
             return {
                 ...state,
@@ -36,7 +56,7 @@ export default (state = initialState, action) => {
         case 'UPDATE_SPEED_MEASURE':
             return {
                 ...state,
-                speedMeasure: action.payload.measurement,
+                speedMeasure: action.payload.metricUnits ? 'MPH' : 'KM/H',
             };
         case 'UPDATE_SEATBELT':
             return {
@@ -70,19 +90,19 @@ export default (state = initialState, action) => {
                 fuel: Boolean(action.payload.fuel)
                     ? action.payload.fuel
                     : state.fuel,
-                fuelHide: typeof(action.payload.fuelHide) == "boolean"
+                fuelHide: typeof(action.payload.fuelHide) === "boolean"
                     ? action.payload.fuelHide
-                    : state.fuelHide
+                    : state.fuelHide,
             };
-        case 'SHOW_FUEL':
+        case 'IN_VEHICLE':
             return {
                 ...state,
-                fuelHide: false,
+                isInVehicle: true,
             };
-        case 'HIDE_FUEL':
+        case 'OUT_VEHICLE':
             return {
                 ...state,
-                fuelHide: true,
+                isInVehicle: false,
             };
         default:
             return state;

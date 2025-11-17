@@ -4,57 +4,137 @@ import { Fade, useTheme } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import ReactHtmlParser from 'react-html-parser';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import beltoff from '../../assets/beltoff.svg';
+import belton from '../../assets/belton.svg';
 
 const useStyles = makeStyles((theme) => ({
     wrapper: {
         position: 'absolute',
-        left: 0,
-        right: 0,
+        left: '17.5vw',
+        top: '80vh',
         margin: 'auto',
         width: 'fit-content',
-        filter: `drop-shadow(0 0 2px ${theme.palette.secondary.dark}e0)`,
+        filter: `drop-shadow(0 0 2px #2c2b2c)`,
         fontSize: 30,
         color: theme.palette.text.main,
         textAlign: 'center',
     },
-    speed: {},
+    speed: {
+        display: 'flex',
+        flexDirection: 'column',
+        width: '90px',
+        height: '90px',
+        borderRadius: '50%',
+        gridGap: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
+        backgroundColor: '#2c2b2c',
+        // border: '1px solid #000',
+    },
     speedText: {
-        fontSize: 50,
-        color: theme.palette.text.main,
-        display: 'inline-block',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
+        fontSize: '2vw',
+        textShadow: '30px 30px 30px #7f7e80',
+        filter: `drop-shadow(30px 30px 30px #7f7e80)`,
+        color: '#f1f1f1',
         transition: 'color ease-in 0.15s',
+        marginTop: 1,
         '& .filler': {
-            color: theme.palette.text.alt,
+            color: '#f1f1f1',
         },
     },
     speedTextOff: {
-        fontSize: 50,
-        color: theme.palette.primary.main,
+        fontSize: 45,
+        color: '#8a0000',
+        textShadow: '30px 30px 30px #7f7e80',
         textTransform: 'uppercase',
         display: 'inline-block',
     },
     speedMeasure: {
-        fontSize: 25,
-        color: theme.palette.text.alt,
-        marginLeft: 10,
+        display: 'flex',
+        textTransform: 'uppercase',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
+        fontSize: '0.7vw',
+        color: '#f1f1f1',
+        textShadow: '30px 30px 30px #7f7e80',
+        marginTop: -4,
     },
     icons: {
+        position: 'absolute',
+        bottom: '15vh',
+        left: '0.5vw',
         display: 'flex',
+        width: '45px',
+        height: '45px',
+        borderRadius: '50%',
+        // border: '1px solid #000',
+        padding: 5,
         gridGap: 0,
         justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#2c2b2c',
+    },
+    icons2: {
+        position: 'absolute',
+        bottom: '5vh',
+        left: '-1vw',
+        display: 'flex',
+        width: '45px',
+        height: '45px',
+        borderRadius: '50%',
+        // border: '1px solid #000',
+        padding: 5,
+        gridGap: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#2c2b2c',
     },
     seatbeltIcon: {
-        fontSize: 25,
-        color: theme.palette.warning.dark,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 29,
+        height: 29,
         animation: '$flash linear 1s infinite',
+    },
+    seatbeltIcon1: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 38,
+        height: 28,
     },
     checkEngine: {
-        margin: '0 30px',
-        fontSize: 25,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        fontSize: 19,
+        marginLeft: 3,
         color: theme.palette.warning.dark,
         animation: '$flash linear 1s infinite',
     },
+
+    checkEngine1: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        fontSize: 19,
+        marginLeft: 3,
+        color: theme.palette.warning.dark,
+        opacity: 0.5,
+    },
     cruiseIcon: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         margin: '0 15px',
         fontSize: 25,
         color: theme.palette.primary.main,
@@ -116,7 +196,7 @@ const useStyles = makeStyles((theme) => ({
         right: 0,
         bottom: 0,
         margin: 'auto',
-        background: theme.palette.secondary.dark,
+        background: '#2c2b2c',
         '& svg': {
             position: 'absolute',
             top: 0,
@@ -138,6 +218,22 @@ const useStyles = makeStyles((theme) => ({
             opacity: 1,
         },
     },
+    circle: {
+        bottom: '6.9%',
+        width: '27vh',
+        height: '22.9vh',
+        border: `4px solid ${'#2c2b2c'}`,
+        position: 'absolute',
+        display: 'inline-block',
+        borderRadius: '50%',
+    },
+    mapborder: {
+        position: 'absolute',
+        bottom: '2.6vh',
+        left: '-15.3vw',
+        width: '0%',
+        textAlign: 'center',
+    },
 }));
 
 export default () => {
@@ -156,11 +252,11 @@ export default () => {
 
     useEffect(() => {
         if (speed === 0) {
-            setSpeedStr(`<span class="filler">000</span>`);
+            setSpeedStr(`<span class="filler">0</span>`);
         } else if (speed < 10) {
-            setSpeedStr(`<span class="filler">00</span>${speed.toString()}`);
+            setSpeedStr(`<span class="filler"></span>${speed.toString()}`);
         } else if (speed < 100) {
-            setSpeedStr(`<span class="filler">0</span>${speed.toString()}`);
+            setSpeedStr(`<span class="filler"></span>${speed.toString()}`);
         } else {
             setSpeedStr(speed.toString());
         }
@@ -168,44 +264,52 @@ export default () => {
 
     return (
         <Fade in={showing}>
-            <div
-                className={classes.wrapper}
-                style={{
-                    bottom:
-                        config.statusIcons || config.statusNumbers ? 50 : 20,
-                }}
-            >
+            <div className={classes.wrapper} style={{ bottom: config.statusIcons || config.statusNumbers ? 50 : 20 }}>
+                <div className={classes.mapborder}>
+                    <div className={classes.circle}></div>
+                </div>
+                {!seatbeltHide && (
+                    <Fade in={ignition}>
+                        <div className={classes.icons}>
+                            {!seatbelt ? (
+                                <Fade in={!seatbelt}>
+                                    <span>
+                                        <img className={classes.seatbeltIcon} src={beltoff} alt="seatbelt" style={{ gridColumn: 1 }} />
+                                    </span>
+                                </Fade>
+                            ) : (
+                                <Fade in={seatbelt}>
+                                    <span>
+                                        <img className={classes.seatbeltIcon1} src={belton} alt="seatbelt" style={{ gridColumn: 1 }} />
+                                    </span>
+                                </Fade>
+                            )}
+                        </div>
+                    </Fade>
+                )}
                 <Fade in={ignition}>
-                    <div className={classes.icons}>
-                        <Fade in={!seatbelt && !seatbeltHide}>
-                            <span>
-                                <FontAwesomeIcon
-                                    className={classes.seatbeltIcon}
-                                    style={{ gridColumn: 1 }}
-                                    icon={['fas', 'triangle-exclamation']}
-                                />
-                            </span>
-                        </Fade>
-                        <Fade in={checkEngine}>
-                            <span>
-                                <FontAwesomeIcon
-                                    className={classes.checkEngine}
-                                    style={{ gridColumn: 1 }}
-                                    icon={['fas', 'screwdriver-wrench']}
-                                />
-                            </span>
-                        </Fade>
-                        {cruise && (
-                            <Fade in={cruise}>
+                    <div className={classes.icons2}>
+                        {checkEngine ? (
+                            <Fade in={checkEngine}>
                                 <span>
                                     <FontAwesomeIcon
-                                        className={classes.cruiseIcon}
+                                        className={classes.checkEngine}
                                         style={{ gridColumn: 1 }}
-                                        icon={['fas', 'gauge']}
+                                        icon={['fas', 'oil-can']}
                                     />
                                 </span>
                             </Fade>
-                        )}
+                        ) : (
+                        <Fade in={!checkEngine}>
+                            <span>
+                                <FontAwesomeIcon
+                                    className={classes.checkEngine1}
+                                    style={{ gridColumn: 1 }}
+                                    icon={['fas', 'oil-can']}
+                                />
+                            </span>
+                        </Fade>
+                    )}
                     </div>
                 </Fade>
                 <div className={classes.speed}>

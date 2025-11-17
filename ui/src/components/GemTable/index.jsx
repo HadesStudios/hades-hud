@@ -44,19 +44,19 @@ export default () => {
     const showing = useSelector((state) => state.gemTable.showing);
     const info = useSelector((state) => state.gemTable.info);
 
-    if (!showing || !info) return null;
-
-    const displayInfo =
-        typeof info === 'object'
-            ? info.quality ?? JSON.stringify(info)
-            : info;
-
+    //if (!showing || !Boolean(info)) return null;
     return (
-        <Fade in={showing} timeout={500} mountOnEnter unmountOnExit>
+        <Fade
+            direction="down"
+            in={showing}
+            timeout={500}
+            mountOnEnter
+            unmountOnExit
+        >
             <div className={classes.wrapper}>
                 <div className={`${classes.blackBar} top`}>SAGMA Gem Table</div>
                 <div className={`${classes.blackBar} bottom`}>
-                    Appraised Gem Quality: {displayInfo}%
+                    Appraised Gem Quality: {info}%
                 </div>
             </div>
         </Fade>

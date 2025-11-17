@@ -4,8 +4,9 @@ import appReducer from 'containers/App/reducer';
 import notifReducer from 'containers/Notifications/reducer';
 import actionReducer from './containers/Action/reducer';
 import hudReducer from './containers/Hud/reducer';
+import dialogReducer from './components/Dialog/reducer';
 import locationReducer from './components/Location/reducer';
-import statusReducer from './components/Status/reducer';
+import statusReducer from './components/Status/old/reducer';
 import vehicleReducer from './components/Vehicle/reducer';
 import progressReducer from './components/Progress/reducer';
 import thirdEyeReducer from './components/ThirdEye/reducer';
@@ -17,6 +18,8 @@ import infoOverlayReducer from './components/InfoOverlay/reducer';
 import gemReducer from './components/GemTable/reducer';
 import methReducer from './components/Meth/reducer';
 import arcadeReducer from './containers/Arcade/reducer';
+import menuReducer from './components/Menu/reducer';
+import minimapReducer from './components/Minimap/reducer';
 
 export default () =>
     combineReducers({
@@ -25,6 +28,7 @@ export default () =>
         action: actionReducer,
         interaction: interactionReducer,
         hud: hudReducer,
+        dialog: dialogReducer,
         location: locationReducer,
         status: statusReducer,
         vehicle: vehicleReducer,
@@ -37,4 +41,6 @@ export default () =>
         gemTable: gemReducer,
         meth: methReducer,
         arcade: arcadeReducer,
+        menu: menuReducer,
+        minimap: minimapReducer,
     });

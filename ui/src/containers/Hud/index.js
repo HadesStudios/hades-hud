@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Fade } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
-import { Location, Status, Vehicle } from '../../components';
+import { Location, StatusOld, StatusNew, Vehicle } from '../../components';
 
 const useStyles = makeStyles((theme) => ({
     wrapper: {
@@ -16,6 +16,9 @@ const useStyles = makeStyles((theme) => ({
 export default () => {
     const classes = useStyles();
     const showing = useSelector((state) => state.hud.showing);
+    const statusStyle = useSelector((state) => state.hud.config.statusStyle || 'old');
+
+    const Status = statusStyle === 'new' ? StatusNew : StatusOld;
 
     return (
         <Fade in={showing}>

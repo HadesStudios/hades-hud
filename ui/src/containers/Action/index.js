@@ -1,65 +1,54 @@
+/* eslint-disable react/no-danger */
 import React from 'react';
 import { useSelector } from 'react-redux';
 import ReactHtmlParser from 'react-html-parser';
 import { Grow } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import { alpha } from '@mui/material';
 
 const useStyles = makeStyles((theme) => ({
     wrapper: {
-        color: 'white',
+        color: theme.palette.text.main,
         textShadow: '0 0 3px #000000',
-    padding: '12px 16px',
-    height: 'fit-content',
-    position: 'absolute',
-    bottom: '6%',
-    right: 0,
-    left: 0,
-    margin: 'auto',
-    width: 'auto',
-    maxWidth: '75%',
-    fontSize: 24,
-    borderRadius: 6,
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    alignItems: 'center',
-    columnGap: 12,
-    rowGap: 6,
+        padding: 10,
+        height: 'fit-content',
+        position: 'absolute',
+        bottom: '7vh',
+        right: 0,
+        left: 0,
+        margin: 'auto',
+        width: 'fit-content',
+        fontSize: 20,
+        '& svg': {
+            position: 'absolute',
+            left: -15,
+            bottom: -15,
+            color: 'rgb(156,230,13)',
+            fontSize: 28,
+            zIndex: 100,
+        },
+        textTransform: 'capitalize',
+        userSelect: 'none'
+    },
+    highlight: {
+        color: '#3aaaf9',
+        fontWeight: 500,
+    },
+    '.highlight': {
+        color: '#3aaaf9',
+        fontWeight: 500,
+    },
+    highlightSplit: {
+        color: '#ffffff',
+        fontWeight: 500,
     },
     key: {
-    padding: '10px 12px',
-        color: 'white',
-        backgroundColor: 'rgba(105, 105, 105, 0.71)',
-        borderRadius: 4.5,
-        textTransform: 'uppercase',
-    // removed marginRight to allow container gaps to center items cleanly
-    fontSize: '1.0em',
-        fontWeight: 'bold',
-    width: '44px',
-    height: '44px',
-        display: 'inline-flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        border: '2.9px solid rgba(126, 126, 126, 255)',
-        boxSizing: 'border-box',
-    },
-    text: {
-    fontWeight: 'bold',
-    display: 'inline-flex',
-    alignItems: 'center',
-    // rely on wrapper gaps but ensure vertical alignment with keys
-    minHeight: '44px',
-    paddingLeft: 8,
-    textAlign: 'center',
-    },
-    pipe: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    // act as an invisible spacer so removing the visible '|' keeps centering
-    width: 16,
-    height: '44px',
-    boxSizing: 'border-box',
+		background: alpha(theme.palette.primary.main, 0.45),
+		color: 'white',
+		border: `2px solid ${alpha(theme.palette.primary.main, 0.45)}`,
+		padding: '5px 14px',
+		borderRadius: '4px',
+		marginRight: 5
     },
 }));
 
@@ -70,16 +59,14 @@ export default () => {
 
     const ParseButtonText = () => {
         let v = message;
-    // wrap each line in a text span first, then convert key placeholders into sibling spans
-    v = v.replace(/(.*)/g, `<span class="${classes.text}">$1</span>`);
-    // convert {key} into a close-text + key-open so the key becomes a sibling (prevents overlay)
-    v = v.replace(/\{key\}/g, `</span><span class="${classes.key}">`);
-    v = v.replace(/\{\/key\}/g, `</span><span class="${classes.text}">`);
-    // replace visible '|' with an invisible spacer so centering/layout is preserved
-    v = v.replace(/\|/g, `<span class="${classes.pipe}" aria-hidden="true"></span>`);
+        
+        v = v.replace(/\{key\}([^\{]+)\{\/key\}/gi, (match, p1) => {
+            return `<span class="${classes.key}">${p1}</span>`;
+        });
+    
         return v;
-    };
-
+    };    
+   
     if (!Boolean(message)) return null;
     return (
         <Grow in={showing}>

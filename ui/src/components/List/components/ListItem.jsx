@@ -14,15 +14,25 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Sanitize } from '../../../util/Parser';
 
 const useStyles = makeStyles((theme) => ({
-    wrapper: {
-        background: theme.palette.secondary.main,
+    oddItem: {
+        background: theme.palette.secondary.main, 
         transition: 'background ease-in 0.15s',
         '&.clickable:hover': {
             background: theme.palette.secondary.dark,
         },
+        userSelect: 'none'
+    },
+    evenItem: {
+        background: theme.palette.secondary.dark,
+        transition: 'background ease-in 0.15s',
+        '&.clickable:hover': {
+            background: theme.palette.secondary.main, 
+        },
+        userSelect: 'none'
     },
     action: {
         fontSize: 14,
+        userSelect: 'none'
     },
     phw: {
         pointerEvents: 'none !important',
@@ -71,7 +81,7 @@ export default ({ index, item }) => {
             }
             disabled={Boolean(item.disabled)}
             divider
-            className={`${classes.wrapper}${
+            className={`${index % 2 === 0 ? classes.evenItem : classes.oddItem}${
                 !Boolean(item.actions) &&
                 (Boolean(item.event) || Boolean(item.submenu))
                     ? ' clickable'

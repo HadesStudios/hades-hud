@@ -1,9 +1,9 @@
 fx_version 'cerulean'
 games { 'gta5' }
 lua54 'yes'
+author 'AutLaaw'
 client_script "@hades-base/components/cl_error.lua"
 client_script "@hades-pwnzor/client/check.lua"
-
 
 data_file "SCALEFORM_DLC_FILE" "stream/int3232302352.gfx"
 

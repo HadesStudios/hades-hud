@@ -45,6 +45,8 @@ function RetrieveComponents()
 	Jail = exports["hades-base"]:FetchComponent("Jail")
 	Animations = exports["hades-base"]:FetchComponent("Animations")
 	Admin = exports["hades-base"]:FetchComponent("Admin")
+	Dialog = exports["hades-base"]:FetchComponent("Dialog")
+	PedInteraction = exports["hades-base"]:FetchComponent("PedInteraction")
 end
 
 AddEventHandler("Core:Shared:Ready", function()
@@ -65,11 +67,21 @@ AddEventHandler("Core:Shared:Ready", function()
 		"Jail",
 		"Animations",
 		"Admin",
+		"Dialog",
+		"PedInteraction",
 	}, function(error)
 		if #error > 0 then
 			return
 		end
 		RetrieveComponents()
+
+		PedInteraction:Add("PDiddy", `a_m_m_beach_01`, vector3(-1580.156, -34.142, 56.565), 262.189, 25.0, {
+			{
+				icon = "person",
+				text = "Interact",
+				event = "Dialog:Client:Test",
+			}
+		}, 'user-secret')
 		-- Hud.Minimap:Set()
 
 		Keybinds:Add("show_interaction", "F1", "keyboard", "Hud - Show Interaction Menu", function()
@@ -135,6 +147,67 @@ AddEventHandler("Core:Shared:Ready", function()
 				cb(not cancelled)
 			end)
 		end)
+
+		-- Status Style Toggle Command
+		RegisterCommand('statusstyle', function(source, args, rawCommand)
+			local style = args[1] or 'old'
+			if style ~= 'old' and style ~= 'new' then
+				style = 'old'
+			end
+			
+			SendNUIMessage({
+				type = "SET_CONFIG",
+				data = {
+					config = {
+						statusStyle = style
+					}
+				}
+			})
+			
+			Chat.Send.System:Single(-1, string.format("Status style set to: %s", style))
+		end, false)
+
+		-- Health and Armor Update Thread
+		CreateThread(function()
+			local lastHealth = 0
+			local lastArmor = 0
+			
+			while true do
+				Wait(500)
+				
+				if LocalPlayer.state.loggedIn then
+					local ped = PlayerPedId()
+					local health = GetEntityHealth(ped)
+					local armor = GetPedArmour(ped)
+					
+					-- Convert health to 0-100 scale (GTA health is 0-200, with 100 being base)
+					local healthPercent = math.max(0, math.min(100, ((health - 100) / 100) * 100))
+					
+					if health ~= lastHealth or armor ~= lastArmor then
+						SendNUIMessage({
+							type = "UPDATE_HP",
+							data = {
+								hp = math.floor(healthPercent),
+								armor = armor
+							}
+						})
+						
+						lastHealth = health
+						lastArmor = armor
+					end
+					
+					-- Check if dead
+					if health <= 100 then
+						SendNUIMessage({
+							type = "SET_DEAD",
+							data = {
+								state = true
+							}
+						})
+					end
+				end
+			end
+		end)
 	end)
 end)
 
@@ -151,6 +224,41 @@ function deepcopy(orig)
 		copy = orig
 	end
 	return copy
+end
+
+function CalculateMinimap()
+    local safezoneSize = GetSafeZoneSize()
+    local aspectRatio = GetAspectRatio(false)
+
+    if aspectRatio > 2 then aspectRatio = 16 / 9 end
+
+    local screenWidth, screenHeight = GetActiveScreenResolution()
+    local xScale = 1.0 / screenWidth
+    local yScale = 1.0 / screenHeight
+
+    local minimap = {
+        width = xScale * (screenWidth / (4 * aspectRatio)),
+        height = yScale * (screenHeight / 5.674),
+        leftX = xScale * (screenWidth * (1.0 / 20.0 * ((math.abs(safezoneSize - 1.0)) * 10))),
+        bottomY = 1.0 - yScale * (screenHeight * (1.0 / 20.0 * ((math.abs(safezoneSize - 1.0)) * 10)))
+    }
+
+    if aspectRatio > 2 then
+        minimap.leftX = minimap.leftX + minimap.width * 0.845
+        minimap.width = minimap.width * 0.76
+    elseif aspectRatio > 1.8 then
+        minimap.leftX = minimap.leftX + minimap.width * 0.2225
+        minimap.width = minimap.width * 0.995
+    end
+
+    minimap.topY = minimap.bottomY - minimap.height
+
+    return {
+        width = minimap.width * screenWidth,
+        height = minimap.height * screenHeight,
+        left = minimap.leftX * 100,
+        top = minimap.topY * 100
+    }
 end
 
 HUD = {
@@ -554,13 +662,6 @@ function ShowIds()
 				local targetPed = GetPlayerPed(id)
 				if DoesEntityExist(targetPed) then
 					local source = GetPlayerServerId(id)
-					
-					-- Check if this player has hideAdminID enabled
-					local targetPlayerState = Player(source).state
-					if targetPlayerState.hideAdminID then
-						goto continue
-					end
-					
 					local distance = #(
 							vector3(playerCoords.x, playerCoords.y, playerCoords.z)
 							- GetEntityCoords(targetPed)
@@ -573,8 +674,6 @@ function ShowIds()
 							distance = distance,
 						})
 					end
-					
-					::continue::
 				end
 			end
 			Wait(2000)
@@ -649,10 +748,25 @@ function StartVehicleThreads()
 		})
 	end
 
+	local speedMeasure = 'MPH'
+	RegisterNUICallback('UnitData', function(data, cb)
+		if data and data.speedMeasure then
+			speedMeasure = data.speedMeasure
+		end
+		cb('ok')
+	end)
+
 	CreateThread(function()
 		DisplayRadar(true)
 		while _vehToggled do
-			local speed = math.ceil(GetEntitySpeed(GLOBAL_VEH) * 2.237)
+			local speed
+
+			if speedMeasure == 'KM/H' then
+				speed = math.ceil(GetEntitySpeed(GLOBAL_VEH) * 3.6)
+			else
+				speed = math.ceil(GetEntitySpeed(GLOBAL_VEH) * 2.236936)
+			end
+
 			SendNUIMessage({
 				type = "UPDATE_SPEED",
 				data = { speed = speed },
@@ -661,6 +775,30 @@ function StartVehicleThreads()
 		end
 
 		DisplayRadar(false)
+	end)
+
+	CreateThread(function()
+		local wasInVehicle = false
+		while true do
+			Wait(1000)
+
+			local playerPed = LocalPlayer.state.ped
+			local isInVehicle = IsPedInAnyVehicle(playerPed, false)
+
+			if isInVehicle and not wasInVehicle then
+				--print("In Vehicle")
+				SendNUIMessage({
+					type = "IN_VEHICLE"
+				})
+				wasInVehicle = true
+			elseif not isInVehicle and wasInVehicle then
+				--print("Not In Vehicle")
+				SendNUIMessage({
+					type = "OUT_VEHICLE"
+				})
+				wasInVehicle = false
+			end
+		end
 	end)
 
 	if GetPedInVehicleSeat(GLOBAL_VEH, -1) ~= LocalPlayer.state.ped then

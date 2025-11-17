@@ -1,6 +1,6 @@
 export const initialState = {
-    showing: false,
-    message: null,
+    showing: false,//process.env.NODE_ENV != 'production',
+    message: process.env.NODE_ENV == 'production' ? null : '{key}E{/key} open clothing store | {key}G{/key} open wardrobe',
 };
 
 export default (state = initialState, action) => {

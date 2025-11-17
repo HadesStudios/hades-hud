@@ -7,6 +7,10 @@ export const initialState = {
 
     flashbanged: false,
 
+    bugsvisible: false,
+
+    bodycamActive: false,
+
     isDeathTexts: false,
     isReleasing: false,
     deathTime: false,
@@ -84,6 +88,17 @@ const appReducer = (state = initialState, action) => {
                 ...state,
                 flashbanged: action.payload,
             };
+        case 'SET_BUGS':
+            return {
+                ...state,
+                bugsvisible: action.payload.state,
+            };
+        case 'BODYCAM_TOGGLED': {
+            return {
+                ...state,
+                bodycamActive: action.payload.state
+            }
+        }
         case 'CLEAR_FLASHBANGED':
             return {
                 ...state,

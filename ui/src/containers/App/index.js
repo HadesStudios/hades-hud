@@ -14,6 +14,7 @@ import { fab } from '@fortawesome/free-brands-svg-icons';
 
 import Action from '../Action';
 import Hud from '../Hud';
+import Dialog from '../../components/Dialog';
 import Notifications from '../Notifications';
 import List from '../../components/List';
 import Input from '../../components/Input';
@@ -22,6 +23,7 @@ import InfoOverlay from '../../components/InfoOverlay';
 import { Progress, ThirdEye, GemTable } from '../../components';
 
 import Interaction from '../../components/Interaction';
+import HudMenu from '../../components/HudMenu';
 
 import LCD from '../../assets/fonts/lcd.ttf';
 import SniperScope from '../../components/SniperScope';
@@ -32,6 +34,9 @@ import Ingredients from '../../components/Meth';
 import DeathTexts from './DeathTexts';
 import Arcade from '../Arcade';
 import Flashbang from './Flashbang';
+import Menu from '../../components/Menu';
+import Minimap from '../../components/Minimap';
+import BugReportForm from './BugReports'
 
 library.add(fab, fas);
 
@@ -64,9 +69,9 @@ const App = ({ hidden }) => {
                 contrastText: '#ffffff',
             },
             secondary: {
-                main: '#141414',
-                light: '#1c1c1c',
-                dark: '#0f0f0f',
+                main: '#0A1825',
+                light: '#0A1825',
+                dark: '#000D1B',
                 contrastText: '#ffffff',
             },
             error: {
@@ -169,7 +174,7 @@ const App = ({ hidden }) => {
                             borderColor: '#ffffffc7',
                         },
                         '50%, 100%': {
-                            borderColor: `${muiTheme && muiTheme.palette ? (muiTheme.palette.primary && muiTheme.palette.primary.main) || '#005e8aff' : '#005e8aff'}`,
+                            borderColor: `#de3333`,
                         },
                     },
                 },
@@ -177,7 +182,7 @@ const App = ({ hidden }) => {
             MuiPaper: {
                 styleOverrides: {
                     root: {
-                        background: '#0f0f0f',
+                        background: '#000D1B',
                     },
                 },
             },
@@ -191,9 +196,12 @@ const App = ({ hidden }) => {
                 <Dead />
                 <Blindfold />
                 <Flashbang />
+                <BugReportForm />
                 <DeathTexts />
                 <InfoOverlay />
                 <Hud />
+                <HudMenu />
+                <Dialog />
                 <Notifications />
                 <Action />
                 {isMeth && <Ingredients />}
@@ -206,6 +214,8 @@ const App = ({ hidden }) => {
                 <Crosshair />
                 <SniperScope />
                 <GemTable />
+                <Menu />
+                <Minimap />
             </ThemeProvider>
         </StyledEngineProvider>
     );
